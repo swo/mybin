@@ -3,16 +3,26 @@
 use strict;
 use LWP::Simple;
 
-my $acc = $ARGV[0];
-if (not $acc) { $acc = <STDIN>; }
+while (<>) {
+    chomp;
+    my $acc = $_;
+    if ($acc eq "not_found") {
+        print "not_found\n";
+        next;
+    }
 
-#assemble the URL
-my $base = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
-my $url = $base . "efetch.fcgi?db=nucleotide&id=$acc&rettype=gi";
+    #assemble the URL
+    my $base = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+    my $url = $base . "efetch.fcgi?db=nucleotide&id=$acc&rettype=gi";
 
-#post the URL
-my $output = get($url);
-print $output;
+    #post the URL
+    my $output = get($url);
+    if ($output) {
+        print $output;
+    } else {
+        print "not_found\n";
+    }
+}
 
 
 =head2 USAGE
