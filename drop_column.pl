@@ -1,4 +1,9 @@
+#!/usr/bin/env perl -w
+
+use strict;
+
 my ($col, $fn) = @ARGV;
+my $fh;
 
 if (defined $fn) {
     open $fh, $fn or die $!;
@@ -7,7 +12,7 @@ if (defined $fn) {
 }
 
 while (<$fh>) {
-    @a = split ',';
+    my @a = split ',';
     splice @a, $col, 1;
     print join ',', @a;
 }
