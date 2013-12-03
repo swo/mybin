@@ -9,6 +9,7 @@ GetOptions(\%opts, 'help|?', 'delimiter|d=s', 'last|l');
 die "drop_column.pl --delimiter/-d=',' N FILENAME\n" if $opts{'help'};
 
 my $delim = $opts{'delimiter'};
+$delim = "\t" if $delim eq 'tab';
 $delim = ',' unless defined $delim;
 
 my $col = shift unless $opts{'last'};
@@ -38,5 +39,7 @@ while (<$fh>) {
 =head1
 
 reads a csv file from file or standard input and deletes a particular column
+
+default delimiter is comma. Tab can be set with -d=tab or -d="whatever"
 
 drop_column.pl N FILENAME

@@ -19,13 +19,13 @@ while (not eof($fh1) and not eof($fh2)) {
 
     # if the first field is equal, then show the whole line
     # otherwise, move down a line
-    if ($tax1 eq $tax2) {
+    if ($tax1 == $tax2) {
         print $l1;
         $l1 = <$fh1>;
         $l2 = <$fh2>;
-    } elsif ($tax1 lt $tax2) {
+    } elsif ($tax1 < $tax2) {
         $l1 = <$fh1>;
-    } elsif ($tax1 gt $tax2) {
+    } elsif ($tax1 > $tax2) {
         $l2 = <$fh2>;
     }
 }
