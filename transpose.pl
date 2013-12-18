@@ -1,21 +1,42 @@
-#! /usr/bin/perl -anF/\t|\n/
+#! /usr/bin/perl
 
 use warnings;
+use 5.10.1;
 
-$n = @F - 1 if !$n;
+use Getopt::Long;
+my %opts;
+GetOptions(\%opts, 'help|?', 'delimiter|d=s');
+die "transpose.pl --delimiter/-d=',' FILENAME\n" if $opts{'help'};
 
-for $i (0..$n) {
-    push @{ $m->[$i] }, $F[$i];
+my $delim = $opts{'delimiter'};
+$delim = ',' unless defined $delim;
+$delim = "\t" if $delim eq 'tab';
+
+my $fn = shift;
+my $fh;
+if (defined $fn) {
+    open $fh, $fn or die $!;
+} else {
+    $fh = *STDIN;
 }
 
-END {
-    for $r (@$m) {
-        print join("\t", @$r), "\n";
+while (<$fh>) {
+    chomp;
+    @F = split /$delim/;
+
+    for $i (0..$#F) {
+        push @{$m->[$i]}, $F[$i];
     }
+}
+
+for $r (@$m) {
+    say join $delim, @$r;
 }
 
 =head2
 
-transpose.pl TSV_FILE
-
 Transposes a tab-separated value file
+
+default delimiter is comma. Tab can be set with -d=tab or -d="whatever"
+
+transpose.pl FILENAME
