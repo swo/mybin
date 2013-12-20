@@ -12,7 +12,7 @@ while(<>) {
     unless ($flag) {
         $flag = 1;
         print "OTU_ID\t";
-        say join "\t", map { "S$_" } (1 .. $#F);
+        say join "\t", map { "S$_" } (1 .. @F);
     }
 
     print "otu$.\t";
