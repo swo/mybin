@@ -12,6 +12,9 @@ use Mac::Pasteboard;
 # get the DOI information
 my $doi = shift;
 
+# make sure the DOI starts with "doi:"
+$doi = "doi:" . $doi unless $doi =~ /^doi:/;
+
 my $ua = LWP::UserAgent->new;
 my $req = HTTP::Request->new(GET => "http://dx.doi.org/$doi");
 $req->header(Accept => "text/bibliography; style=bibtex");
