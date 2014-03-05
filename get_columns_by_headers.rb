@@ -5,19 +5,25 @@
 
 require 'optparse'
 
-options = {:record_separator => "\t"}
+options = {:record_separator => "\t", :include_headers => false}
 OptionParser.new do |opts|
     opts.banner = "Usage: get_columns_by_header.rb HEADERS_FILE TARGET_FILE [options]"
 
     opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs|
         options[:record_separator] = rs
     }
+    opts.on("-i", "--include_headers", "Include headers at the top of output (default: off") { |h|
+        options[:include_headers] = h
+    }
 end.parse!
 
 headers_fn, target_fn = ARGV
 
 # grab the headers
-headers = File.readlines(headers_fn).map(&:chomp)
+headers = File.readlines(headers_fn).map(&:chomp).reject { |header| header == '' }
+
+# write out the headers if desired
+puts headers.join(options[:record_separator]) if options[:include_headers]
 
 # open the header, keeping track of the single set of indices for this whole file
 File.open(target_fn, 'r') do |target_f; idx|
