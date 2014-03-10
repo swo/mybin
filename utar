@@ -1,0 +1,3 @@
+#!/bin/sh
+
+COPY_EXTENDED_ATTRIBUTES_DISABLE=true COPYFILE_DISABLE=true exec tar "$@"
