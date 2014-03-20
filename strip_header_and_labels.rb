@@ -14,6 +14,5 @@ ARGF.each do |line|
     next if $. == 1
 
     # otherwise drop the first field and print that out
-    fields = line.split(options[:record_separator])
-    print fields.drop(1).join(options[:record_separator])
+    print line.split(options[:record_separator]).drop(1).join(options[:record_separator])
 end
