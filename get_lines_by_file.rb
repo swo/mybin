@@ -12,24 +12,15 @@ OptionParser.new do |opts|
     opts.on("-p", "--print-line", "Print the line number of the output line") { options[:show_line] = true }
 end.parse!
 
-if ARGV.length != 2
-    puts "wrong number of arguments"
-    exit
-end
+raise RuntimeError, 'script takes two arguments' unless ARGV.length == 2
 
 lines_fn, target_fn = ARGV
 
 line_numbers = File.open(lines_fn).readlines.map(&:to_i)
 target_lines = File.open(target_fn).readlines.map(&:chomp)
 
-line_numbers.each.with_index { |line_number, i|
-    if options[:show_index] 
-        print "#{i}: "
-    end
-
-    if options[:show_line]
-        print "#{line_number}: "
-    end
-
-    puts "#{target_lines[line_number + options[:offset]]}"
-}
+line_numbers.each.with_index do |line_number, i|
+  print "#{i}: " if options[:show_index] 
+  print "#{line_number}: " if options[:show_line]
+  puts "#{target_lines[line_number + options[:offset]]}"
+end
