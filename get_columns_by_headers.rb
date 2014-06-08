@@ -4,6 +4,7 @@
 # in the other file.
 
 require 'optparse'
+require 'Set'
 
 options = {:record_separator => "\t", :exclude_headers => false, :new_names => nil}
 OptionParser.new do |opts|
@@ -36,7 +37,8 @@ File.open(target_fn, 'r') do |target_f; idx|
         if $. == 1 then
           # if it's the first line, look for the important indices
           # first check that they exist!
-          raise RuntimeError, 'not all headers found' unless headers.all? { |header| fields.include? header }
+          missing = headers.to_set - fields.to_set
+          raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
           idx = headers.map { |header| fields.index(header) }
         else
             # otherwise, grab the values!
