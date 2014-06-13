@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-options = {:record_separator => "\t", :offset => 0}
+options = {:record_separator => "\t", :offset => 0, :show_index => false, :show_line => false}
 OptionParser.new do |opts|
     opts.banner = "Usage: get_lines_by_file.rb LINES_FILE TARGET_FILE [options]"
 
