@@ -4,7 +4,7 @@
 # in the other file.
 
 require 'optparse'
-require 'Set'
+require 'set'
 
 options = {:record_separator => "\t", :exclude_headers => false, :new_names => nil}
 OptionParser.new do |opts|
@@ -30,7 +30,8 @@ else
 end
 
 # open the header, keeping track of the single set of indices for this whole file
-File.open(target_fn, 'r') do |target_f; idx|
+idx = Array.new
+File.open(target_fn, 'r') do |target_f|
     target_f.each do |line|
         fields = line.chomp.split(options[:record_separator])
         
