@@ -3,14 +3,13 @@
 require 'optparse'
 
 usage = <<END
-Usage: get_lines_by_index.rb index_file target_file [options]
-Finds lines in target that have a first field that matches lines from the index file
+usage: get_lines_by_index.rb index_file target_file [options]
+finds lines in target that have a first field that matches lines from the index file
 END
 
-options = {:record_separator => "\t", :offset => 0}
+options = {:record_separator => "\t"}
 OptionParser.new do |opts|
     opts.banner = usage
-
     opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs| options[:record_separator] = rs }
 end.parse!
 
