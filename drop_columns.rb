@@ -10,9 +10,7 @@ options = {:record_separator => "\t", :negative => false}
 OptionParser.new do |opts|
     opts.banner = "Usage: drop_columns.rb [options] START_INDEX END_INDEX FILE"
 
-    opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs|
-        options[:record_separator] = rs
-    }
+    opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs| options[:record_separator] = rs }
     opts.on("-n", "--negative", "Count from the back of the fields (default: false") { |n| options[:negative] = n }
 end.parse!
 
