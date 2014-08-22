@@ -4,6 +4,8 @@
 #
 # Author:: Scott Olesen
 
+require 'optparse'
+
 def summarize_column(qstat_output, name, i)
   entries = qstat_output.split("\n").drop(2).map { |line| line.split[i] }
   uniqs = entries.uniq
@@ -14,6 +16,10 @@ def summarize_column(qstat_output, name, i)
   dat.sort_by { |u, c| c }.reverse.each { |u, c| puts "#{u}: #{c}" }
   puts
 end
+
+OptionParser.new do |opts|
+  opts.banner = ["usage: qcount.rb", "summarize the output of qstat by user and stats"].join("\n")
+end.parse!
 
 raw = `qstat`
 summarize_column(raw, "users", 2)
