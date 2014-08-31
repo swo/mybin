@@ -15,8 +15,19 @@ Main do
   end
   
   def run
+    lines = Hash.new
+    targets = params[:lines].values.first
     params[:i].value.each do |line|
-      puts line.strip if params[:lines].values.first.include? $.
+      # put this line in the hash if it's a target
+      lines[$.] = line.strip if targets.include? $.
+
+      # print out the targets if we have them in order
+      while lines.key? targets.first
+        puts lines.delete(targets.shift)
+      end
+
+      # stop looping if we are done with the file
+      break if targets.empty?
     end
   end
 end
