@@ -5,7 +5,7 @@
 # align any two strings. naively scan one string against the other, looking for identical
 # characters to make the score.
 
-require 'optparse'
+require 'arginine'
 
 class Aligner
   def initialize(a, b)
@@ -78,16 +78,12 @@ class Aligner
   end
 end
 
-options = {:stats => false}
-OptionParser.new do |opts|
-  opts.banner = 'usage: align.rb A B'
+params = Arginine::parse do |a|
+  a.flag "stats", :desc => "show alignment stats?"
+  a.arg "A"
+  a.arg "B"
+end
 
-  opts.on('-s', '--stats', 'show alignment stats?') { |x| options[:stats] = x }
-end.parse!
-
-a = ARGV.shift
-b = ARGV.shift
-
-aligner = Aligner.new(a, b)
+aligner = Aligner.new(params["A"], params["B"])
 aligner.show_best_alignment
-aligner.show_stats if options[:stats]
+aligner.show_stats if params["stats"]

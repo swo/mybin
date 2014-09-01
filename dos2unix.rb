@@ -2,10 +2,10 @@
 
 # author:: scott w olesen <swo@mit.edu>
 
-require 'optparse'
+require 'arginine'
 
-OptionParser.new do |opts|
-    opts.banner = ["usage: dos2unix.rb _file_", "convert carriage returns to newline"].join("\n")
-end.parse!
+params = Arginine.parse do |a|
+  a.desc "convert carriage returns to newline"
+end
 
 ARGF.each { |line| puts line.tr("\r", "\n") }
