@@ -2,17 +2,11 @@
 #
 # author: scott w olesen <swo@mit.edu>
 
-require 'main'
+require 'arginine'
 
-Main do
-  description "get the first field"
-  option :separator=, "F" do
-    argument_required
-    default "\t"
-  end
-  input :input
-  
-  def run
-    input.each { |line| puts line.split(params[:separator].values.first).first }
-  end
+params = Arginine::parse do |a|
+  a.desc "get the first field from every line"
+  a.opt "separator", :short => "F", :default => "\t"
 end
+
+ARGF.each { |line| puts line.split(params["separator"]).first }
