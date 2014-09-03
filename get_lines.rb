@@ -2,39 +2,25 @@
 #
 # author: scott w olesen <swo@mit.edu>
 
-require 'main'
+require 'arginine'
 
-Main do
-  description "get lines according to command line"
-  argument :lines do
-    desc "lines in the file to grab, comma-separated"
-    cast :list_of_integer
-  end
-  option :offset, "o" do
-    desc "like, how many header lines are there?"
-    cast :int
-    default 0
-    argument_required
-  end
-  input :i do
-    desc "input file, or - for stdin"
-  end
-  
-  def run
-    lines = Hash.new
-    offset = params[:offset].values.first
-    targets = params[:lines].values.first.map { |x| x + offset }
-    params[:i].value.each do |line|
-      # put this line in the hash if it's a target
-      lines[$.] = line.strip if targets.include? $.
+params = Arginine::parse do |a|
+  a.desc "get lines according to list"
+  a.opt "offset", :short => "o", :default => 0, :cast => :to_i, :desc => "like, how many header lines?"
+  a.arg "lines", :cast => lambda { |x| x.split(",").map(&:to_i) }
+end
 
-      # print out the targets if we have them in order
-      while lines.key? targets.first
-        puts lines.delete(targets.shift)
-      end
+lines = {}
+targets = params["lines"].map { |x| x + params["offset"] }
+ARGF.each do |line|
+  # store this line if it's a target
+  lines[$.] = line.strip if targets.include? $.
 
-      # stop looping if we are done with the file
-      break if targets.empty?
-    end
+  # print out the targets if we have them in order
+  while lines.key? targets.first
+    puts lines.delete(targets.shift)
   end
+
+  # stop looping if we are done
+  break if targets.empty?
 end
