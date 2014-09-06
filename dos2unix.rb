@@ -4,8 +4,9 @@
 
 require 'arginine'
 
-params = Arginine.parse do |a|
-  a.desc "convert carriage returns to newline"
+params = Arginine.parse do
+  desc "convert carriage returns to newline"
+  argf
 end
 
 ARGF.each { |line| puts line.tr("\r", "\n") }

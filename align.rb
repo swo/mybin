@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 #
 # author: scott w olesen <swo@mit.edu>
-#
-# align any two strings. naively scan one string against the other, looking for identical
-# characters to make the score.
 
 require 'arginine'
 
@@ -78,10 +75,11 @@ class Aligner
   end
 end
 
-params = Arginine::parse do |a|
-  a.flag "stats", :desc => "show alignment stats?"
-  a.arg "A"
-  a.arg "B"
+params = Arginine::parse do
+  desc "align two strings to find the offset with lowest hamming distance"
+  flag "stats", :desc => "show alignment stats?"
+  arg "A"
+  arg "B"
 end
 
 aligner = Aligner.new(params["A"], params["B"])

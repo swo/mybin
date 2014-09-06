@@ -4,12 +4,12 @@
 #
 # leave off the sequence at the beginning of each line. replace it with seq1, seq2, etc.
 
-require 'optparse'
+require 'arginine'
 
-options = {}
-OptionParser.new do |opt|
-  opt.banner = "usage: #{File.basename(__FILE__)} seq_table"
-end.parse!
+params = Arginine::parse do 
+  desc "replace actual sequences with seq\#"
+  argf "seq table"
+end
 
 ARGF.each do |line|
   if $. == 1
