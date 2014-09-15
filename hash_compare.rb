@@ -9,6 +9,13 @@ params = Arginine::parse do |a|
   desc "compare files in two directories by hashing"
   arg :dir1
   arg :dir2
+  opt :ignore, :desc => "ignore filenames that match some regex"
+end
+
+def glob_filenames(dir, ignore=nil)
+  fns = Dir.glob("#{dir}/*")
+  fns.reject! { |fn| fn.match(ignore) } unless ignore.nil?
+  fns
 end
 
 def digest_hash(fns)
@@ -21,8 +28,8 @@ def digest_hash(fns)
   h
 end
 
-digest1 = digest_hash(Dir.glob("#{params[:dir1]}/*"))
-digest2 = digest_hash(Dir.glob("#{params[:dir2]}/*"))
+digest1 = digest_hash(glob_filenames(params[:dir1], ignore=params[:ignore]))
+digest2 = digest_hash(glob_filenames(params[:dir2], ignore=params[:ignore]))
 
 common_digests = Set.new(digest1.keys) & Set.new(digest2.keys)
 
