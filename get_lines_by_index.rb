@@ -1,26 +1,24 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
+require 'arginine'
 
-usage = <<END
-usage: get_lines_by_index.rb index_file target_file [options]
-finds lines in target that have a first field that matches lines from the index file
-END
+params = Arginine::parse do
+  desc "find lines in a wilfe that have a first field in a list of indices"
+  opt :separator, :short => "F", :default => "\t"
+  opt :words, :desc => "list of words to grab"
+  opt :words_separator, :default => ","
+  opt :file, :desc => "file with list of words to grab"
+  argf "file with lines to be grabbed"
+end
 
-options = {:record_separator => "\t", :included_words => []}
-OptionParser.new do |opts|
-    opts.banner = usage
-    opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs| options[:record_separator] = rs }
-    opts.on("-i", "--include [WORDS]", "Comma-separated list of indices to include (default nothing)") { |words| options[:included_words] = words.split(',') }
-end.parse!
+raise RuntimeError, "file OR list of indices must be specified" unless params[:words].nil? ^ params[:file].nil?
 
-raise RuntimeError, 'script takes two arguments' unless ARGV.length == 2
-
-index_fn = ARGV.shift
-
-indices = File.open(index_fn).readlines.map(&:chomp)
-indices.concat(options[:included_words])
+if params[:file]
+  indices = open(params[:file]).readlines.map(&:chomp)
+elsif params[:words]
+  indices = params[:words].split(params[:words_separator])
+end
 
 ARGF.each do |line|
-  puts line if indices.include? line.split(options[:record_separator]).first
+  puts line if indices.include? line.split(params[:separator]).first
 end
