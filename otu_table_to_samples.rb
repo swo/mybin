@@ -1,17 +1,14 @@
 #!/usr/bin/env ruby
+#
+# author: scott w olesen <swo@mit.edu>
+#
 
-'''
-Extract sample labels from an otu table
-'''
+require 'arginine'
 
-require 'optparse'
-
-options = {:record_separator => "\t"}
-OptionParser.new do |opts|
-    opts.banner = "Usage: otu_table_to_samples.rb [options] FILE"
-
-    opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default: tab)") { |rs| options[:record_separator] = rs }
-end.parse!
+params = Arginine::parse do
+    desc "extract sample names from an otu table"
+    argf
+end
 
 ARGF.each do |line|
     unless line.strip.start_with? '#'
