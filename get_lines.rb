@@ -4,11 +4,11 @@
 
 require 'arginine'
 
-params = Arginine::parse do |a|
-  a.desc "get lines according to list"
-  a.opt "offset", :short => "o", :default => 0, :cast => :to_i, :desc => "like, how many header lines?"
-  a.flag "numbers", :desc => "show line numbers?"
-  a.arg "lines", :cast => lambda { |x| x.split(",").map(&:to_i) }
+params = Arginine::parse do
+  desc "get lines according to list"
+  opt "offset", :short => "o", :default => 0, :cast => :to_i, :desc => "like, how many header lines?"
+  flag "numbers", :desc => "show line numbers?"
+  arg "lines", :cast => lambda { |x| x.split(",").map(&:to_i) }
 end
 
 lines = {}
