@@ -1,2 +1,11 @@
 *.command
 *.sublime-*
+FastTree
+clustalo
+julia
+matlab
+matlab.sh
+uclust
+uclustq1*
+usearch
+usearch7*
