@@ -20,8 +20,15 @@ ARGF.each do |line|
   # print out the targets if we have them in order
   while lines.key? targets.first
     if params["numbers"]
-      n = targets.first - params["offset"]
-      out = "#{n}:#{lines.delete(targets.shift)}"
+      if params["offset"] == 0
+        s = targets.first.to_s
+      else
+        n = targets.first - params["offset"]
+        s = n.to_s
+        s << sprintf("%+d", params["offset"])
+      end
+
+      out = "#{s}:#{lines.delete(targets.shift)}"
     else
       out = lines.delete(targets.shift)
     end
