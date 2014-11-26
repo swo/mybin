@@ -9,6 +9,7 @@ params = Arginine::parse do |a|
   a.opt :separator, :short => "F", :default => "\t"
   a.opt :headers, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
   a.opt :file, :desc => "newline-separated column headers"
+  a.flag :include, :desc => "include headers in output?"
 end
 
 raise RuntimeError, "need -h or -f" if [:headers, :file].all? { |o| params[o].nil? }
@@ -30,6 +31,7 @@ ARGF.each do |line|
     raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
     
     idx = headers.map { |header| fields.index(header) }
+    puts headers.join(params[:separator]) if params[:include]
   else
     puts fields.values_at(*idx).join(params[:separator])
   end
