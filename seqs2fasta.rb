@@ -1,16 +1,20 @@
 #!/usr/bin/env ruby
 #
 # author: scott w olesen <swo@mit.edu>
-#
-# convert a list of newline separated sequences into a fasta
 
-require 'optparse'
+require 'arginine'
 
-options = {:name => "seq"}
-OptionParser.new do |opt|
-  opt.banner = "usage: #{File.basename(__FILE__)}"
+params = Arginine::parse do |a|
+  desc "convert newline-separated sequences into a fasta"
+  opt :numbers, :desc => "pick your own comma-separated X,Y to make >seqX, >seqY", :default => :nil, :cast => lambda { |s| s.split(",") }
+  argf "sequences"
+end
 
-  opt.on("-n", "--name [name]", "name for sequence (e.g., >name1; default name)") { |name| options[:name] = name }
-end.parse!
-
-ARGF.each_with_index { |line, i| puts [">#{options[:name]}#{i}", line.strip] }
+if params[:numbers].nil?
+  ARGF.each_with_index { |line, i| puts [">seq#{i}", line.strip] }
+else
+  ARGF.each do |line|
+    raise RuntimeError, "ran out of numbers" if params[:numbers].empty?
+    puts [">seq#{params[:numbers].shift}", line.strip]
+  end
+end
