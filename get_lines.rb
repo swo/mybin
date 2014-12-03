@@ -9,6 +9,7 @@ params = Arginine::parse do
   opt "offset", :short => "o", :default => 0, :cast => :to_i, :desc => "like, how many header lines?"
   flag "numbers", :desc => "show line numbers?"
   arg "lines", :cast => lambda { |x| x.split(",").map(&:to_i) }
+  argf "lines to be searched"
 end
 
 lines = {}
@@ -19,18 +20,19 @@ ARGF.each do |line|
 
   # print out the targets if we have them in order
   while lines.key? targets.first
+    target = targets.shift
+    line = lines[target]
     if params["numbers"]
       if params["offset"] == 0
-        s = targets.first.to_s
+        s = target.to_s
       else
-        n = targets.first - params["offset"]
-        s = n.to_s
-        s << sprintf("%+d", params["offset"])
+        n = target - params["offset"]
+        s = "#{n}#{sprintf("%+d", params["offset"])}"
       end
 
-      out = "#{s}:#{lines.delete(targets.shift)}"
+      out = "#{s}:#{line}"
     else
-      out = lines.delete(targets.shift)
+      out = line
     end
     puts out
   end
