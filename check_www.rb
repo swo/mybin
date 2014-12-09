@@ -8,7 +8,7 @@ require 'digest'
 params = Arginine::parse do |a|
   desc "checks a website for its md5"
   opt :www, :default => "scottolesen.com"
-  opt :hash, :default => ".check_www_hash"
+  opt :hash, :default => File.join(File.dirname(__FILE__), ".check_www_hash")
   flag :save, :desc => "save hash rather than comparing?"
 end
 
