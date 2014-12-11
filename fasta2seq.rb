@@ -21,6 +21,12 @@ else
   headers = params[:headers].split(params[:separator])
 end
 
+# get all the entries
+entries = {}
 Bio::FlatFile.auto(ARGF).each_entry do |e|
-  puts e.entry if headers.include? e.definition
+  entries[e.definition] = e.entry if headers.include? e.definition
+  break if entries.size == headers.size
 end
+
+# return the entries in order
+headers.each { |h| puts entries[h] }
