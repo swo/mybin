@@ -1,21 +1,16 @@
 #!/usr/bin/env ruby
 #
 # author:: scott w olesen <swo@mit.edu>
-#
-# search one file for some lines. if you find a match to the word, print the line from the
-# other file
 
-require 'optparse'
+require 'arginine'
 
-options = {}
-OptionParser.new do |opt|
-  opt.banner = "usage: #{File.basename(__FILE__)} query data target"
-end.parse!
+params = Arginine::parse do
+  desc "if line X in db file matches pattern, print line X of target file"
+  arg :pattern
+  arg :db
+  arg :target
+end
 
-query = ARGV.shift
-data_fn = ARGV.shift
-target_fn = ARGV.shift
-
-File.open(data_fn).zip(File.open(target_fn)) do |data_line, target_line|
-	puts target_line if data_line.match(query)
+open(params[:db]).zip(open(params[:target])) do |db_line, target_line|
+  puts target_line if db_line.match(params[:pattern])
 end
