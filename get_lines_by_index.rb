@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+#
+# author: scott w olesen (swo@mit.edu)
 
 require 'arginine'
 
