@@ -1,26 +1,26 @@
 #!/usr/bin/env ruby
+#
+# author: scott w olesen (swo@mit.edu)
 
-require 'optparse'
+require 'arginine'
 
-options = {:record_separator => "\t", :offset => 0, :show_index => false, :show_line => false}
-OptionParser.new do |opts|
-    opts.banner = "Usage: get_lines_by_file.rb LINES_FILE TARGET_FILE [options]"
+params = Arginine::parse do
+  desc "if X is in db file, print line X in target file"
+  opt :offset, desc: "offset lines in target file?", cast: :to_i, default: 0
+  flag :numbers, desc: "print line numbers?"
+  arg :db
+  arg :target
+end
 
-    opts.on("-F", "--separator [SEPARATOR]", "Specify record separator (default tab)") { |rs| options[:record_separator] = rs }
-    opts.on("-l", "--lines", "Use line numbers rather than 0-start indices") { options[:offset] = -1 }
-    opts.on("-i", "--print-index", "Print the index of the output line") { options[:show_index] = true }
-    opts.on("-p", "--print-line", "Print the line number of the output line") { options[:show_line] = true }
-end.parse!
+idx0 = open(params[:db]).readlines.map(&:to_i)
+idx = idx0.map { |x| x - params[:offset] }
 
-raise RuntimeError, 'script takes two arguments' unless ARGV.length == 2
-
-lines_fn, target_fn = ARGV
-
-line_numbers = File.open(lines_fn).readlines.map(&:to_i)
-target_lines = File.open(target_fn).readlines.map(&:chomp)
-
-line_numbers.each.with_index do |line_number, i|
-  print "#{i}: " if options[:show_index] 
-  print "#{line_number}: " if options[:show_line]
-  puts "#{target_lines[line_number + options[:offset]]}"
+open(params[:target]).each_with_index do |line, i|
+  if idx.include? i
+    if params[:numbers]
+      puts "#{i}\t#{line.chomp}"
+    else
+      puts line
+    end
+  end
 end
