@@ -14,6 +14,8 @@ end
 
 lines = {}
 targets = params["lines"].map { |x| x + params["offset"] }
+
+ARGF.lineno = 0
 ARGF.each do |line|
   # store this line if it's a target
   lines[$.] = line.strip if targets.include? $.
