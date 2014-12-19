@@ -7,7 +7,7 @@ require 'tempfile'
 
 params = Arginine::parse do |a|
   desc "align sequences with clustal"
-  opt :size, :desc => "fraction of screen width", :cast => :to_f, :default => 0.80
+  opt :size, :desc => "fraction of screen width (0.0 to 1.0)", :cast => :to_f, :default => 1.0
   flag :align_only, :desc => "show only alignment?"
   argf "fasta"
 end
@@ -25,9 +25,13 @@ else
   params[:fasta] = params[:file].path
 end
 
+# find the length of the longest name
+long_name = `grep ">" #{params[:fasta]}`.split("\n").map(&:chomp).map(&:length).max
+
 # get the width of the terminal and the number of output columns
+# for proper spacing, subtract the length of the longest name and spaces (6)
 n_cols = `tput cols`
-out_cols = (n_cols.to_f * params[:size]).floor
+out_cols = (n_cols.to_f * params[:size]).floor - long_name - 6
 
 # get results from clustalo. drop the first banner line and empty lines.
 lines = `clustalo --outfmt=clu --wrap=#{out_cols} -i #{params[:fasta]}`.split("\n")
