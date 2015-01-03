@@ -25,8 +25,9 @@ else
   params[:fasta] = params[:file].path
 end
 
-# find the length of the longest name
+# find the length of the longest name, or 27 (whichever is smallest)
 long_name = `grep ">" #{params[:fasta]}`.split("\n").map(&:chomp).map(&:length).max
+long_name = [long_name, 27].min
 
 # get the width of the terminal and the number of output columns
 # for proper spacing, subtract the length of the longest name and spaces (6)
