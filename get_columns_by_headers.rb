@@ -7,16 +7,16 @@ require 'set'
 
 params = Arginine::parse do |a|
   a.opt :separator, :short => "F", :default => "\t"
-  a.opt :headers, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
+  a.opt :words, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
   a.opt :file, :desc => "newline-separated column headers"
   a.flag :include, :desc => "include headers in output?"
 end
 
-raise RuntimeError, "need -h or -f" if [:headers, :file].all? { |o| params[o].nil? }
+raise RuntimeError, "need -w or -f" if [:words, :file].all? { |o| params[o].nil? }
 
 # read in headers
-unless params[:headers].nil?
-  headers = params[:headers]
+unless params[:words].nil?
+  headers = params[:words]
 else
   headers = open(params[:file]).readlines.map(&:chomp)
 end
