@@ -7,7 +7,8 @@ require 'tempfile'
 
 params = Arginine::parse do |a|
   desc "align sequences with clustal"
-  flag :align_only, :desc => "show only alignment?"
+  flag :align_only, desc: "show only alignment?"
+  flag :invert, desc: "mark only unmatched positions?"
   argf "fasta"
 end
 
@@ -20,6 +21,10 @@ else
   params[:file].write(ARGF.read)
   params[:file].close
   params[:fasta] = params[:file].path
+end
+
+def invert(s)
+  s.tr(' .:*', 'xxx ')
 end
 
 # find the length of the longest name, or 27 (whichever is smallest)
@@ -45,6 +50,7 @@ if params[:align_only]
 
   # chop off the name block, then tie them together
   alignment = align_groups.map { |g| g.last[(name_block_length - 1)..-1] }.join("")
+  alignment = invert(alignment) if params[:invert]
   puts "~" + alignment + "~"
 else
   puts lines.join("\n")
