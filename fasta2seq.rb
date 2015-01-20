@@ -10,6 +10,7 @@ params = Arginine::parse do |a|
   arg :headers, :desc => "comma-separated list or filename"
   opt :separator, :short => "F", :default => ","
   flag :table, :desc => "does the header file have a header line?"
+  flag :quiet, :desc => "ignore error warnings?"
   argf "fasta"
 end
 
@@ -24,9 +25,19 @@ end
 # get all the entries
 entries = {}
 Bio::FlatFile.auto(ARGF).each_entry do |e|
-  entries[e.definition] = e.entry if headers.include? e.definition
+  label = e.definition.match(/^[^;]+/)[0]
+  entries[label] = e.entry if headers.include? label
   break if entries.size == headers.size
 end
 
+# unless the quiet flag is on, complain about missing entries
+unless params[:quiet]
+  if entries.size < headers.size
+    puts "could not find entries:"
+    puts headers.reject { |h| entries.include? h }
+    puts
+  end
+end
+
 # return the entries in order
-headers.each { |h| puts entries[h] }
+headers.each { |h| puts entries[h] if entries.key? h }
