@@ -5,22 +5,32 @@
 require 'arginine'
 require 'set'
 
-params = Arginine::parse do
+params = Arginine::parse do 
   opt :separator, :short => "F", :default => "\t"
   opt :words, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
   opt :file, :desc => "newline-separated column headers"
   flag :include, :desc => "include headers in output?"
   flag :one, :short => "1", :desc => "include first header?"
+  flag :rename, :desc => "rename headers using second field in column headers file?"
   argf
 end
 
 raise RuntimeError, "need -w or -f" if [:words, :file].all? { |o| params[o].nil? }
+raise RuntimeError, "-r require -f" if params[:rename] and params[:file].nil?
 
 # read in headers
 unless params[:words].nil?
   headers = params[:words]
+  new_headers = headers
 else
-  headers = open(params[:file]).readlines.map(&:chomp)
+  lines = open(params[:file]).readlines.map(&:chomp)
+  if params[:rename]
+    headers = lines.map { |l| l.split[0] }
+    new_headers = lines.map { |l| l.split[1] }
+  else
+    headers = lines
+    new_headers = headers
+  end
 end
 
 idx = []
@@ -37,10 +47,10 @@ ARGF.each do |line|
 
     if params[:one]
       idx.unshift 0
-      headers.unshift fields.first
+      new_headers.unshift fields.first
     end
 
-    puts headers.join(params[:separator]) if params[:include]
+    puts new_headers.join(params[:separator]) if params[:include]
   else
     puts fields.values_at(*idx).join(params[:separator])
   end
