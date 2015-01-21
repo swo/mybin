@@ -10,10 +10,13 @@ params = Arginine::parse do
   arg :grep_file
   arg :print_file
   flag :numbers, desc: "print line numbers?"
+  flag :one, short: '1', desc: "include first line of print file?"
 end
 
 # read in the lines
 lines = `grep -n #{params[:pattern]} #{params[:grep_file]} | cut -d ":" -f 1`.split("\n")
+
+lines.unshift('1') if params[:one]
 
 # create a sed command to print only those lines
 sed_program = lines.map { |l| "#{l}p" }.join(";")

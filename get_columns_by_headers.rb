@@ -5,11 +5,13 @@
 require 'arginine'
 require 'set'
 
-params = Arginine::parse do |a|
-  a.opt :separator, :short => "F", :default => "\t"
-  a.opt :words, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
-  a.opt :file, :desc => "newline-separated column headers"
-  a.flag :include, :desc => "include headers in output?"
+params = Arginine::parse do
+  opt :separator, :short => "F", :default => "\t"
+  opt :words, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
+  opt :file, :desc => "newline-separated column headers"
+  flag :include, :desc => "include headers in output?"
+  flag :one, :short => "1", :desc => "include first header?"
+  argf
 end
 
 raise RuntimeError, "need -w or -f" if [:words, :file].all? { |o| params[o].nil? }
@@ -22,6 +24,7 @@ else
 end
 
 idx = []
+ARGF.lineno = 0
 ARGF.each do |line|
   fields = line.chomp.split(params[:separator])
   if $. == 1
@@ -31,6 +34,12 @@ ARGF.each do |line|
     raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
     
     idx = headers.map { |header| fields.index(header) }
+
+    if params[:one]
+      idx.unshift 0
+      headers.unshift fields.first
+    end
+
     puts headers.join(params[:separator]) if params[:include]
   else
     puts fields.values_at(*idx).join(params[:separator])
