@@ -10,6 +10,7 @@ params = Arginine::parse do |a|
   flag :align_only, desc: "show only alignment?"
   flag :invert, desc: "mark only unmatched positions?"
   flag :unwrap, desc: "show one line per sequence/alignment?"
+  flag :truncate, desc: "ignore starting or ending nts for which one seq has a gap?"
   argf "fasta"
 end
 
@@ -55,6 +56,14 @@ data = names.each_with_index.map { |name, i| groups.map { |ls| ls[i][data_range]
 
 # invert the alignments if desired
 data[-1] = data[-1].tr(' .:*', 'xxx ') if params[:invert]
+
+if params[:truncate]
+  # ignore the last data line, which is the alignment
+  # what's the longest string of dashes starting any one of those lines?
+  start_i = data[0..-2].map { |seq| seq.match(/^-*/)[0].length }.max
+  end_i = -(data[0..-2].map { |seq| seq.match(/-*$/)[0].length }.max + 1)
+  data.map! { |line| line[start_i..end_i] }
+end
 
 if params[:unwrap]
   if params[:align_only]
