@@ -51,7 +51,7 @@ names << ""
 names.map! { |name| name.ljust(name_block_length, " ") }
 
 # unwrap the lines
-data = names.each_with_index.map { |name, i| groups.map { |lines| lines[i][data_range] }.join("") }
+data = names.each_with_index.map { |name, i| groups.map { |ls| ls[i][data_range] }.join("") }
 
 # invert the alignments if desired
 data[-1] = data[-1].tr(' .:*', 'xxx ') if params[:invert]
@@ -60,7 +60,7 @@ if params[:unwrap]
   if params[:align_only]
     puts data.last
   else
-    names.zip(data) { |name, data| puts name + data }
+    names.zip(data) { |name, datum| puts name + datum }
   end
 else
   # break up the data into chunks [[seq1 chunk1, seq2 chunk1, ...], [s1c2, s2c2, ...]]
@@ -73,7 +73,7 @@ else
     data_chunks = data.map { |s| s.scan(/.{1,#{data_block_length}}/) }.transpose
 
     data_chunks.each do |chunk|
-      names.zip(chunk) { |name, data| puts name + data }
+      names.zip(chunk) { |name, datum| puts name + datum }
       puts
     end
   end
