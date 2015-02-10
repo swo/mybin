@@ -12,11 +12,17 @@ params = Arginine::parse do
   flag :include, :desc => "include headers in output?"
   flag :one, :short => "1", :desc => "include first header?"
   flag :rename, :desc => "rename headers using second field in column headers file?"
+  flag :table, :desc => "equivalent to -1 -i"
   argf
 end
 
 raise RuntimeError, "need -w or -f" if [:words, :file].all? { |o| params[o].nil? }
 raise RuntimeError, "-r require -f" if params[:rename] and params[:file].nil?
+
+if params[:table]
+  params[:one] = true
+  params[:include] = true
+end
 
 # read in headers
 unless params[:words].nil?
@@ -33,25 +39,20 @@ else
   end
 end
 
-idx = []
-ARGF.lineno = 0
+# process the first line
+fields = ARGF.gets.split(params[:separator])
+missing = headers.to_set - fields.to_set
+raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
+idx = headers.map { |header| fields.index(header) }
+
+if params[:one]
+  idx.unshift 0
+  new_headers.unshift fields.first
+end
+
+puts new_headers.join(params[:separator]) if params[:include]
+
 ARGF.each do |line|
   fields = line.chomp.split(params[:separator])
-  if $. == 1
-    # if it's the first line, look for the important indices
-    # first check that they exist!
-    missing = headers.to_set - fields.to_set
-    raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
-    
-    idx = headers.map { |header| fields.index(header) }
-
-    if params[:one]
-      idx.unshift 0
-      new_headers.unshift fields.first
-    end
-
-    puts new_headers.join(params[:separator]) if params[:include]
-  else
-    puts fields.values_at(*idx).join(params[:separator])
-  end
+  puts fields.values_at(*idx).join(params[:separator])
 end
