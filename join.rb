@@ -4,12 +4,9 @@
 
 require 'arginine'
 
-params = Arginine::parse do |a|
-  a.desc "join lines into a single line"
-  a.opt "joiner", :short => "F", :default => ","
+params = Arginine::parse do
+  desc "join lines into a single line"
+  opt :joiner, short: "F", default: ","
 end
 
-ARGF.each do |line|
-  print params["joiner"] unless $. == 1
-  print line.strip
-end
+puts ARGF.each.to_a.map(&:strip).join(params[:joiner])
