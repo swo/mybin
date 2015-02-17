@@ -40,9 +40,9 @@ else
 end
 
 # process the first line
-fields = ARGF.gets.split(params[:separator])
+fields = ARGF.gets.chomp.split(params[:separator])
 missing = headers.to_set - fields.to_set
-raise RuntimeError, "not all headers found, missing #{missing.to_a}" unless missing.empty?
+raise RuntimeError, "not all headers found, missing #{missing.to_a} amongst #{fields}" unless missing.empty?
 idx = headers.map { |header| fields.index(header) }
 
 if params[:one]
