@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# utar : unix-like tar for mac
-# the mac tar copies all these weird directories around when making tarballs, and it can
-# get confused when process unix .tar.gz files. changing some environmental variables
-# is sufficient to making it act suitably normal to be comptabile with unix.
-
-COPY_EXTENDED_ATTRIBUTES_DISABLE=true COPYFILE_DISABLE=true exec tar "$@"
