@@ -44,7 +44,11 @@ names = groups.first[0..-2].map { |line| line.split.first }
 # find the size of the label block
 name_block_length = groups.first.first.strip.match(/.*\s+/)[0].length
 longest_name = names.map(&:length).max
-raise "clustal label block length is unexpected" if name_block_length - 6 != [27, longest_name].min
+
+if name_block_length - 6 != [27, longest_name].min
+  raise "clustal label block length (#{name_block_length - 6}) is unexpected (longest name: #{longest_name})" 
+end
+
 data_range = name_block_length..-1
 
 # add a fake name for the alignment line, then pad them to the same length

@@ -7,7 +7,7 @@ require 'bio'
 
 params = Arginine::parse do |a|
   desc "get the fasta entry with these header(s)"
-  arg :headers, :desc => "comma-separated list or filename"
+  arg :headers, :desc => "comma-separated list, filename, or /regex/"
   opt :separator, :short => "F", :default => ","
   flag :table, :desc => "does the header file have a header line?"
   flag :quiet, :desc => "ignore error warnings?"

@@ -4,7 +4,7 @@
 
 require 'arginine'
 
-params = Arginine::parse do |a|
+params = Arginine::parse do
   desc "convert newline-separated sequences into a fasta"
   opt :numbers, :desc => "pick your own comma-separated X,Y to make >seqX, >seqY", :default => :nil, :cast => lambda { |s| s.split(",") }
   argf "sequences"
