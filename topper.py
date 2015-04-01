@@ -20,7 +20,7 @@ def display_time(last_update=None):
 
     return out
 
-def key_loop(stdscr, sleep, commands, show_time):
+def key_loop(stdscr, sleep, command, show_time):
     stdscr.clear()
     stdscr.nodelay(1)
     curses.curs_set(0)
@@ -47,7 +47,7 @@ def key_loop(stdscr, sleep, commands, show_time):
             stdscr.addstr(stdscr_y - 1, 0, display_time(last_update))
 
         if check:
-            output = subprocess.check_output(commands)
+            output = subprocess.check_output(command, shell=True)
 
             # only get the lines that will fit on the screen
             output = "\n".join(output.split("\n")[-stdscr_y: -1])
@@ -77,9 +77,7 @@ if __name__ == '__main__':
     p.add_argument('-t', '--time', action='store_true', help="show the time?")
     args = p.parse_args()
 
-    commands = args.command.split()
-
     def main(stdscr):
-        key_loop(stdscr, sleep=args.sleep, commands=commands, show_time=args.time)
+        key_loop(stdscr, sleep=args.sleep, command=args.command, show_time=args.time)
 
     curses.wrapper(main)
