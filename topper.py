@@ -59,7 +59,7 @@ def key_loop(stdscr, sleep, command, show_time):
                 previous_output = output
 
                 if show_time:
-                    last_update = display_time()
+                    last_update = "now"
 
             check = False
 
