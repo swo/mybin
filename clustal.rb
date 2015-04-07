@@ -11,6 +11,7 @@ params = Arginine::parse do |a|
   flag :invert, desc: "mark only unmatched positions?"
   flag :unwrap, desc: "show one line per sequence/alignment?"
   flag :truncate, desc: "ignore starting or ending nts for which one seq has a gap?"
+  flag :snp, desc: "only show SNP positions? (i.e., not *)"
   argf "fasta"
 end
 
@@ -67,6 +68,12 @@ if params[:truncate]
   start_i = data[0..-2].map { |seq| seq.match(/^-*/)[0].length }.max
   end_i = -(data[0..-2].map { |seq| seq.match(/-*$/)[0].length }.max + 1)
   data.map! { |line| line[start_i..end_i] }
+end
+
+if params[:snp]
+  # ignore any spot that has a * in the alignment
+  snp_positions = data[-1].each_char.each_with_index.select { |char, i| char != "*" }.map(&:last)
+  data.map! { |line| line.each_char.to_a.values_at(*snp_positions).join("") }
 end
 
 if params[:unwrap]
