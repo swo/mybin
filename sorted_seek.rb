@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
+require 'arginine'
+
 class SortedSeek
-  def initialize (fn, separator="\t", record_separator="\n")
+  def initialize(fn, separator="\t", record_separator="\n")
     @fn = fn
     @f = File.open(@fn, 'r')
     @separator = separator
@@ -11,7 +13,7 @@ class SortedSeek
     @n_blocks = (@f.size.to_f / @block_size).ceil
   end
 
-  def seek (target_id)
+  def seek(target_id)
     # preset the lower and upper bounds
     lb = 0
     ub = @n_blocks
@@ -20,7 +22,7 @@ class SortedSeek
     while ub - lb > 1
       # go to the position, burn until a newline, then read the next full line
       @f.seek(mid * @block_size)
-      @f.readline(@record_separator) unless mid == 0
+      @f.readline(@record_separator) unless mid.zero?
       id = @f.readline(@record_separator).split(@separator).first
 
       # move either the upper or lower bound to this midpoint
@@ -49,17 +51,10 @@ class SortedSeek
       line = @f.readline(@record_separator)
       id = line.split(@separator).first
       
-      if id == target_id
-        target_found = true
-        break
-      end
+      return line if id == target_id
     end
 
-    if target_found
-      line
-    else
-      nil
-    end
+    nil
   end
 
   def close
@@ -67,17 +62,15 @@ class SortedSeek
   end
 end
 
-require 'optparse'
+par = Arginine::parse do
+  desc "Search pre-sorted file for a line beginning with a field that matches each of the IDs. Print those lines."
+  opt :field_separator, short: "F", default: "\t"
+  opt :record_separator, short: "R", default: "\n"
+  arg :db, help: "sorted database file"
+  argf "lines to search for"
+end
 
-options = {:field_separator => "\t", :record_separator => "\n"}
-OptionParser.new do |opts|
-    opts.banner = "Usage: sorted_seek.rb FILE IDS [options]\nSearch pre-sorted file for a line beginning with a field that matches each of the IDs. Print those lines."
-    opts.on("-F", "--field_separator [SEPARATOR]", "Specify field separator (default: tab)") { |rs| options[:field_separator] = rs }
-    opts.on("-R", "--record_separator [SEPARATOR]", "Specify record separator (default: \\n)") { |rs| options[:record_separator] = rs }
-end.parse!
-
-fn = ARGV.shift
-seeker = SortedSeek.new(fn, options[:field_separator], options[:record_separator])
+seeker = SortedSeek.new(par[:db], par[:field_separator], par[:record_separator])
 
 ARGF.each do |id|
   puts seeker.seek(id.chomp)
