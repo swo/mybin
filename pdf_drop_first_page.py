@@ -24,7 +24,7 @@ def drop_first_page(input_fn, output_fn):
 
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser(desc='drop the first page of a pdf using pdftk')
+    p = argparse.ArgumentParser(description='drop the first page of a pdf using pdftk')
     p.add_argument('input')
     p.add_argument('output')
     args = p.parse_args()
