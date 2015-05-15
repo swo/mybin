@@ -9,6 +9,7 @@ params = Arginine::parse do
   opt :separator, :short => "F", :default => "\t"
   opt :words, :desc => "comma-separated column headers", :cast => lambda { |s| s.split(",") }
   opt :file, :desc => "newline-separated column headers"
+  opt :comment, :desc => "a comment character?", :default => "#"
   flag :include, :desc => "include headers in output?"
   flag :one, :short => "1", :desc => "include first header?"
   flag :rename, :desc => "rename headers using second field in column headers file?"
@@ -40,7 +41,10 @@ else
 end
 
 # process the first line
-fields = ARGF.gets.chomp.split(params[:separator])
+line = ARGF.gets
+line = ARGF.gets while line.strip.start_with? params[:comment]
+
+fields = line.chomp.split(params[:separator])
 missing = headers.to_set - fields.to_set
 raise RuntimeError, "not all headers found, missing #{missing.to_a} amongst #{fields}" unless missing.empty?
 idx = headers.map { |header| fields.index(header) }

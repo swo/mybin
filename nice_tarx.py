@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # get the directory name
     if args.direc is None:
         tar_base = os.path.basename(args.tar)
-        stripped_tar = re.sub("\.tar$", "", re.sub("\.(gz|bz2)$", "", tar_base))
+        stripped_tar = re.sub("\.t(ar|gz)$", "", re.sub("\.(gz|bz2)$", "", tar_base))
         direc = "tmp_{}".format(stripped_tar)
     else:
         direc = args.direc
