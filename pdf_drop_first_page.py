@@ -6,7 +6,7 @@ import argparse, re, subprocess
 
 def number_of_pages(fn):
     data = subprocess.check_output(['pdftk', fn, 'dump_data', 'output', '-'])
-    lines = data.split("\n")
+    lines = data.decode().split("\n")
     matches = [re.match('NumberOfPages: (\d+)', l) for l in lines]
     vals = [m.group(1) for m in matches if not m is None]
 
