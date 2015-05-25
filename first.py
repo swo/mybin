@@ -11,4 +11,4 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     for line in fileinput.input(args.input):
-        print line.rstrip().split(args.separator)[0]
+        print(line.rstrip().split(args.separator)[0])
