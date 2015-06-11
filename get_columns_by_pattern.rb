@@ -20,7 +20,7 @@ end
 
 fields = ARGF.gets.chomp.split(params[:separator])
 headers = fields.select { |f| f.match(params[:pattern]) }
-raise "no headers match pattern" if headers.empty?
+raise "no headers match pattern: i couldn't find /#{params[:pattern]}/ amongst #{fields}" if headers.empty?
 idx = headers.map { |header| fields.index(header) }
 
 if params[:one]

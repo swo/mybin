@@ -58,5 +58,11 @@ puts new_headers.join(params[:separator]) if params[:include]
 
 ARGF.each do |line|
   fields = line.chomp.split(params[:separator])
-  puts fields.values_at(*idx).join(params[:separator])
+
+  # try to write the line. if the pipe was closed, don't squawk about it.
+  begin
+    puts fields.values_at(*idx).join(params[:separator])
+  rescue Errno::EPIPE => e
+      abort
+  end
 end

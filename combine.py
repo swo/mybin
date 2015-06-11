@@ -12,4 +12,4 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     for line1, line2 in zip(fileinput.input(args.left), fileinput.input(args.right)):
-        print "\t".join([line.rstrip() for line in [line1, line2]])
+        print("\t".join([line.rstrip() for line in [line1, line2]]))

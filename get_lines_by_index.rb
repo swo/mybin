@@ -10,6 +10,7 @@ params = Arginine::parse do
   opt :words, :desc => "list of words to grab"
   opt :words_separator, :default => ","
   opt :file, :desc => "file with list of words to grab"
+  flag :header, short: 'd', help: 'print the first line of the input?'
   argf "file with lines to be grabbed"
 end
 
@@ -20,6 +21,8 @@ if params[:file]
 elsif params[:words]
   indices = params[:words].split(params[:words_separator])
 end
+
+puts ARGF.gets if params[:header]
 
 ARGF.each do |line|
   puts line if indices.include? line.split(params[:separator]).first
