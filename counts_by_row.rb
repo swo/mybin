@@ -17,11 +17,12 @@ if params[:table]
   params[:index] = true
 end
 
+$. = 0
 ARGF.each do |line|
+  fields = line.split
   if params[:header] and $. == 1
-    puts line
+    puts fields.first
   else
-    fields = line.split
     index = fields.shift if params[:index]
     sum = fields.map(&:to_i).reduce(&:+)
 

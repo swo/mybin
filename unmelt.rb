@@ -5,21 +5,26 @@
 require 'arginine'
 
 par = Arginine::parse do
-  desc "group data fields by the first (id) field"
+  desc "group data fields in adjacent fields by the first (id) field"
   opt :separator, short: "F", default: "\t"
   argf
 end
 
-ids = []
-values = Hash.new { |h, k| h[k] = [] }
+line = ARGF.gets.chomp
+last_id = line.split(par[:separator]).first
+print line
 
 ARGF.each do |line|
-  fields = line.chomp.split(par[:separator])
+  line.chomp!
+  fields = line.split(par[:separator])
   id = fields.shift
-  ids << id unless ids.include? id
-  values[id] += fields
+
+  if id == last_id
+    print par[:separator] + fields.join(par[:separator])
+  else
+    print "\n" + line
+    last_id = id
+  end
 end
 
-ids.each do |id|
-  puts ([id] + values[id].sort).join(par[:separator])
-end
+print "\n"
