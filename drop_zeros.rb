@@ -24,5 +24,5 @@ ARGF.each do |line|
   end
 
   fields.slice!(0) if options[:index]
-  puts line unless fields.all? { |x| x == '0' }
+  puts line unless fields.all? { |x| x.to_f == 0.0 }
 end
