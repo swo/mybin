@@ -7,9 +7,11 @@ import argparse, fileinput
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description="combines two files columnwise. output has length of first file.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('--separator', '-F', default="\t")
-    p.add_argument('left')
-    p.add_argument('right')
+    p.add_argument('input', nargs='+')
     args = p.parse_args()
 
-    for line1, line2 in zip(fileinput.input(args.left), fileinput.input(args.right)):
-        print("\t".join([line.rstrip() for line in [line1, line2]]))
+    if len(args.input) < 2:
+        raise RuntimeError('found only {} inputs, need at least 2'.format(len(args.input)))
+
+    for lines in zip(*[fileinput.input(inp) for inp in args.input]):
+        print(*[line.rstrip() for line in lines], sep="\t")
