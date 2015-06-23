@@ -4,6 +4,19 @@
 
 import argparse, fileinput
 
+def execute_script(script, space):
+    # split up the script into individual actions
+    actions = script.split(';')
+
+    if len(actions) == 1:
+        return eval(actions[0], space)
+    else:
+        final_action = actions.pop()
+        for action in actions:
+            exec(action, space)
+
+        return eval(final_action, space)
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('script')
@@ -21,7 +34,7 @@ if __name__ == '__main__':
 
         F = _.split(args.delimiter)
 
-        if args.no_print:
-            eval(args.script)
-        else:
-            print(eval(args.script))
+        output = execute_script(args.script, {'_': _, 'F': F})
+
+        if not args.no_print:
+            print(output)
