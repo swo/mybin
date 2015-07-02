@@ -23,9 +23,14 @@ if __name__ == '__main__':
     p.add_argument('--delimiter', '-F', default='\t')
     p.add_argument('--no_print', '-n', action='store_true')
     p.add_argument('--no_strip', '-s', action='store_true')
+    p.add_argument('--re', '-r', action='store_true', help='import regex module?')
     p.add_argument('input', nargs='*')
     args = p.parse_args()
 
+    if args.re:
+        from re import *
+
+    space = globals()
     for line in fileinput.input(args.input):
         if args.no_strip:
             _ = line
@@ -33,8 +38,9 @@ if __name__ == '__main__':
             _ = line.rstrip()
 
         F = _.split(args.delimiter)
+        space.update({'_': _, 'F': F})
 
-        output = execute_script(args.script, {'_': _, 'F': F})
+        output = execute_script(args.script, space)
 
         if not args.no_print:
             print(output)
