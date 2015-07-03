@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # author: Scott Olesen <swo@mit.edu>
 
@@ -12,7 +12,20 @@ class Timer:
     def elapsed(self):
         return time.time() - self.time
 
-def display_time():
+    @staticmethod
+    def pretty_elapsed_seconds(seconds):
+        if seconds <= 1:
+            return "now"
+        elif 1 < seconds < 60:
+            return "{} seconds ago".format(seconds)
+        elif 60 <= seconds < 3600:
+            return "{} minutes, {} seconds ago".format(seconds / 60, seconds % 60)
+
+    def pretty_elapsed(self):
+        seconds = int(round(self.elapsed()))
+        return self.pretty_elapsed_seconds(seconds)
+
+def current_display_time():
     return time.strftime('%H:%M:%S', time.localtime())
 
 def key_loop(stdscr, sleep, command, show_time):
@@ -22,20 +35,19 @@ def key_loop(stdscr, sleep, command, show_time):
 
     stdscr_y, stdscr_x = stdscr.getmaxyx()
 
-    watch = Timer()
-    watch.reset()
+    refresh_watch = Timer()
+    refresh_watch.reset()
     check = True
     previous_output = ""
 
-    last_update = display_time()
+    status_watch = Timer()
+    status_watch.reset()
 
     while(1):
         c = stdscr.getch()
         if c in range(256):
             if chr(c).lower() == 'q':
                 break
-
-        now = display_time()
 
         if check:
             output = subprocess.check_output(command, shell=True)
@@ -49,21 +61,17 @@ def key_loop(stdscr, sleep, command, show_time):
                 stdscr.refresh()
                 previous_output = output
 
-                last_update = now
+                status_watch.reset()
 
             check = False
 
         if show_time:
-            if last_update == now:
-                out = now + "\tlast update: now"
-            else:
-                out = now + "\tlast update: {}".format(last_update)
-
+            out = display_time() + "\tlast update: " + status_watch.pretty_elapsed()
             stdscr.addstr(stdscr_y - 1, 0, out)
 
-        if watch.elapsed() > sleep:
+        if refresh_watch.elapsed() > sleep:
             check = True
-            watch.reset()
+            refresh_watch.reset()
 
         curses.napms(50)
 
