@@ -12,6 +12,13 @@ if __name__ == '__main__':
     p.add_argument('input', nargs='*', metavar='FILE')
     args = p.parse_args()
 
+    # in the case of "retab.py -i file", argparse thinks that "file" is the option
+    # for -i, when it's actually the value for input, since when using -i, you must
+    # take at least one input file
+    if args.input == [] and args.in_place != False:
+        args.input.append(args.in_place)
+        args.in_place = None
+
     if args.in_place == False:
         kwargs = {}
     else:
@@ -23,4 +30,4 @@ if __name__ == '__main__':
     for line in fileinput.input(args.input, **kwargs):
         fields = re.split(args.regex, line)
         new_line = args.delimiter.join(fields)
-        print(new_line, end='')
+        print(new_line)
