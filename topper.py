@@ -72,7 +72,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description="continously check a command's output")
     p.add_argument('command', type=str, help="command whose output to check")
     p.add_argument('-s', '--sleep', type=float, default=2.0, help="sleep for how many seconds between refresh?")
-    p.add_argument('-t', '--time', action='store_true', help="show the time?")
+    p.add_argument('-t', '--no_time', action='store_false', help="suppress the time?")
     args = p.parse_args()
 
     def main(stdscr):
