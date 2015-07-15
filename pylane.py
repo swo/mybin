@@ -2,7 +2,7 @@
 #
 # author: scott olesen <swo@mit.edu>
 
-import argparse, fileinput
+import argparse, fileinput, warnings
 
 def execute_script(script, space):
     # split up the script into individual actions
@@ -24,6 +24,7 @@ if __name__ == '__main__':
     p.add_argument('--no_print', '-n', action='store_true')
     p.add_argument('--no_strip', '-s', action='store_true')
     p.add_argument('--re', '-r', action='store_true', help='import regex module?')
+    p.add_argument('--verbose', '-v', action='store_true', help='give explicit warnings?')
     p.add_argument('input', nargs='*')
     args = p.parse_args()
 
@@ -38,9 +39,16 @@ if __name__ == '__main__':
             _ = line.rstrip()
 
         F = _.split(args.delimiter)
-        space.update({'_': _, 'F': F})
+        space.update({'_': _, 'F': F, 'lineno': fileinput.lineno()})
 
         output = execute_script(args.script, space)
 
         if not args.no_print:
-            print(output)
+            if output is None:
+                if args.verbose:
+                    warnings.warn("output from command was None; suppressing eval output", stacklevel=2)
+
+                # suppress further output
+                args.no_print = True
+            else:
+                print(output)
