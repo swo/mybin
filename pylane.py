@@ -9,17 +9,24 @@ def execute_script(script, space):
     actions = script.split(';')
 
     if len(actions) == 1:
-        return eval(actions[0], space)
+        return perl_eval(actions[0], space)
     else:
         final_action = actions.pop()
         for action in actions:
             exec(action, space)
 
-        return eval(final_action, space)
+        return perl_eval(final_action, space)
+
+def perl_eval(action, space):
+    res = eval(action, space)
+    if callable(res):
+        return res(space['_'])
+    else:
+        return res
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument('script')
+    p = argparse.ArgumentParser(description="execute a one(ish)-liner", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    p.add_argument('script', help='use "_" for this line, "F" for fields')
     p.add_argument('--delimiter', '-F', default='\t')
     p.add_argument('--no_print', '-n', action='store_true')
     p.add_argument('--no_strip', '-s', action='store_true')
