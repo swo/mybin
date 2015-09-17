@@ -22,7 +22,7 @@ class Timer:
         elif seconds < 60:
             return "{} {} ago".format(seconds, self.pluralize("second", seconds))
         elif 60 <= seconds < 3600:
-            return "{} minutes, {} seconds ago".format(seconds / 60, seconds % 60)
+            return "{} minutes, {} seconds ago".format(seconds // 60, seconds % 60)
 
     def pretty_elapsed(self):
         seconds = int(round(self.elapsed()))
