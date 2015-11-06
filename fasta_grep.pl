@@ -3,19 +3,28 @@
 use warnings;
 use strict;
 use 5.10.1;
+use Getopt::ArgParse;
 
-if (grep($_ eq "-h" || $_ eq "--help", @ARGV)) {
-  say "usage: fasta_grep.pl M PATTERN [files]"; exit;
-}
+my $ap = Getopt::ArgParse->new_parser(
+    prog => 'fasta grep'
+    #,description => 'foo',
+    #,epilog => 'bar'
+);
 
-my $max_hits = shift @ARGV;
-my $pattern = shift @ARGV;
+$ap->add_arg('--max_hits', '-m', default => 0, help => 'stop after M hits');
+$ap->add_arg('pattern', help => 'search sequence IDs for this pattern');
+my $ns = $ap->parse_args();
+
+say "pattern" . $ns->pattern;
+say "max hits" . $ns->max_hits;
+
 my $hits = 0;
+my $pattern = $ns->pattern;
 
 my $state = 0;
 while (<>) {
   if (/^>/) {
-    if ($hits >= $max_hits) {
+    if ($ns->max_hits ne 0 and $hits >= $ns->max_hits) {
       last;
     } elsif (/$pattern/) {
       $state = 1;
