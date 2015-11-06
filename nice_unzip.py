@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # author: scott olesen <swo@mit.edu>
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     if args.direc is None:
         zip_base = os.path.basename(args.zip)
         stripped = re.sub(" ", "_", re.sub("\.zip$", "", zip_base))
-        direc = "tmp_{}".format(stripped)
+        direc = "tmp-{}".format(stripped)
     else:
         direc = args.direc
 

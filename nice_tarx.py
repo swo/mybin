@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # author: scott olesen <swo@mit.edu>
 
@@ -8,7 +8,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description="make a tmp folder and extract the tar", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('tar')
     p.add_argument('--dir', '-d', help='specify dir name?', dest='direc')
-    p.add_argument('--command', '-c', help='tar command', default='gnutar')
+    p.add_argument('--command', '-c', help='tar command', default='tar')
     args = p.parse_args()
 
     # check that the tar pointed to exists
