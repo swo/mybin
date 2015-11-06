@@ -1,0 +1,4 @@
+{
+"jar": "/path/to/RDPTools/classifier.jar",
+"java": "/path/to/java"
+}
