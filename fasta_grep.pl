@@ -7,16 +7,12 @@ use Getopt::ArgParse;
 
 my $ap = Getopt::ArgParse->new_parser(
     prog => 'fasta grep'
-    #,description => 'foo',
-    #,epilog => 'bar'
+    ,description => 'show entries whose IDs match a pattern'
 );
 
 $ap->add_arg('--max_hits', '-m', default => 0, help => 'stop after M hits');
 $ap->add_arg('pattern', help => 'search sequence IDs for this pattern');
 my $ns = $ap->parse_args();
-
-say "pattern" . $ns->pattern;
-say "max hits" . $ns->max_hits;
 
 my $hits = 0;
 my $pattern = $ns->pattern;
