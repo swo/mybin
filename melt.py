@@ -7,10 +7,13 @@ author: scott w olesen (swo@mit.edu)
 import argparse, sys, csv
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser(description='melt a data table using the first column')
+    p = argparse.ArgumentParser(description='melt a data table using the first column', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('table', type=argparse.FileType('r'))
     p.add_argument('--meta', '-m', type=argparse.FileType('r'), help='add variable metadata?')
     p.add_argument('--delimiter', '-F', default='\t')
+    p.add_argument('--id', default='id', help='id column name')
+    p.add_argument('--variable', default='variable', help='variable column name')
+    p.add_argument('--value', default='value', help='value column name')
     p.add_argument('--output', '-o', type=argparse.FileType('w'), default=sys.stdout)
     args = p.parse_args()
 
@@ -26,9 +29,9 @@ if __name__ == '__main__':
 
     
     if args.meta is not None:
-        header = ['id', 'variable'] + meta_headers + ['value']
+        header = [args.id, args.variable] + meta_headers + [args.value]
     else:
-        header = ['id', 'variable', 'value']
+        header = [args.id, args.variable, args.value]
 
     print(*header, sep=args.delimiter)
     for row in reader:
