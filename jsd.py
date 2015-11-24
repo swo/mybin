@@ -36,14 +36,22 @@ def distance_matrix(table):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description='make a list of JSD values')
-    p.add_argument('table', help='otu table (will be normalized automatically)')
-    p.add_argument('--output', '-o', type=argparse.FileType('w'), default=sys.stdout, help='output list')
+    p.add_argument('input', help='otu table (will be normalized automatically)')
+    p.add_argument('--melt', '-m', type=argparse.FileType('w'), default=None, help='melted list output')
+    p.add_argument('--table', '-t', type=argparse.FileType('w'), default=None, help='table output')
     args = p.parse_args()
 
-    table = pd.read_table(args.table, index_col=0)
+    if args.melt is None and args.table is None:
+        raise RuntimeError("one of --melt or --table must be selected for output")
+
+    table = pd.read_table(args.input, index_col=0)
     norm = table.apply(lambda col: col.astype(float) / np.sum(col), axis=0)
     dist = distance_matrix(norm)
 
-    print('sample1', 'sample2', 'jsd', sep="\t", file=args.output)
-    for a, b in itertools.combinations(dist.index, 2):
-        print(a, b, dist[a][b], sep='\t', file=args.output)
+    if args.table is not None:
+        dist.to_csv(args.table, sep="\t")
+
+    if args.melt is not None:
+        print('sample1', 'sample2', 'jsd', sep="\t", file=args.melt)
+        for a, b in itertools.combinations(dist.index, 2):
+            print(a, b, dist[a][b], sep='\t', file=args.melt)
