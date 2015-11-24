@@ -33,7 +33,7 @@ if __name__ == '__main__':
     else:
         header = [args.id, args.variable, args.value]
 
-    print(*header, sep=args.delimiter)
+    print(*header, sep=args.delimiter, file=args.output)
     for row in reader:
         for v in variables:
             if args.meta is not None:
@@ -41,4 +41,4 @@ if __name__ == '__main__':
             else:
                 words = [row[idx], v, row[v]]
 
-            print(*words, sep=args.delimiter)
+            print(*words, sep=args.delimiter, file=args.output)
