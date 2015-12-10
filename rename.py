@@ -14,7 +14,10 @@ if __name__ == '__main__':
 
     new_fns = [re.sub(args.pattern, args.repl, fn) for fn in args.files]
     for fn, new_fn in zip(args.files, new_fns):
-        print('  ', fn, '->', new_fn)
+        if fn == new_fn:
+            print('  ', fn, ': no change')
+        else:
+            print('  ', fn, '->', new_fn)
 
     if not args.force:
         proceed = input('proceed with renaming? [y/N] ').lower()
@@ -23,5 +26,6 @@ if __name__ == '__main__':
             sys.exit(0)
 
     for fn, new_fn in zip(args.files, new_fns):
-        os.rename(fn, new_fn)
-        print('  renamed', fn, '->', new_fn)
+        if fn != new_fn:
+            os.rename(fn, new_fn)
+            print('  renamed', fn, '->', new_fn)
