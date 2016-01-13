@@ -31,14 +31,13 @@ if __name__ == '__main__':
     p.add_argument('--separator', '-F', default="\t")
     p.add_argument('--missing_value', '-m', default="0")
     p.add_argument('--index_name', '-i', default='index')
-    p.add_argument('tables', nargs='+')
+    p.add_argument('tables', type=argparse.FileType('r'), nargs='+')
     args = p.parse_args()
 
     output_column_names = []
     data = {}
-    for table in args.tables:
-        with open(table) as f:
-            column_names, table_data = get_table_data(f, args.separator)
+    for f in args.tables:
+        column_names, table_data = get_table_data(f, args.separator)
         
         # check that the new column names don't hit any of the old
         bad_names = [c for c in column_names if c in output_column_names]
