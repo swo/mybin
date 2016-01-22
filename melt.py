@@ -37,7 +37,7 @@ if __name__ == '__main__':
     for row in reader:
         for v in variables:
             if args.meta is not None:
-                words = [row[idx], v] + [meta[row[idx]][h] for h in meta_headers] + [row[v]]
+                words = [row[idx], v] + [meta[v][h] for h in meta_headers] + [row[v]]
             else:
                 words = [row[idx], v, row[v]]
 
