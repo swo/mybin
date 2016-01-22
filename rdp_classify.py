@@ -8,7 +8,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('fasta', help='input fasta')
     p.add_argument('output', help='output tab-delimited file')
-    p.add_argument('--format', '-f', choices=['fixrank', 'allrank'], default='allrank', help='output format')
+    p.add_argument('--format', '-f', choices=['fixrank', 'allrank'], default='fixrank', help='output format')
     p.add_argument('--config', '-c', default='.rdpconfig.json', help='config file')
     p.add_argument('--jar', '-j', metavar='/path/to/classifier.jar', help='path to RDP classifier jar')
     p.add_argument('--java', '-x', metavar='/path/to/java', help='java binary')
