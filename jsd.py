@@ -53,5 +53,6 @@ if __name__ == '__main__':
 
     if args.melt is not None:
         print('sample1', 'sample2', 'jsd', sep="\t", file=args.melt)
-        for a, b in itertools.combinations(dist.index, 2):
-            print(a, b, dist[a][b], sep='\t', file=args.melt)
+        for i in dist.index:
+            for j in dist.index:
+                print(i, j, dist[i][j], sep='\t', file=args.melt)
