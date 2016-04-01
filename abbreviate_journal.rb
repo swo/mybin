@@ -12,11 +12,17 @@ end
 # convert spaces to +
 title = params[:title].gsub(/ /, "+")
 
+puts title
+
 # make up the url for lookup
-url = "http://www.ncbi.nlm.nih.gov/nlmcatalog/?term=%22#{title}%22&report=Journal&format=text"
+url = "http://www.ncbi.nlm.nih.gov/nlmcatalog/?term=#{title}&report=Journal&format=text"
+
+puts "search url: " + url
 
 # lookup and split into lines
-lines = `curl --silent "#{url}"`.split("\n")
+lines = `curl -A "Mozilla/5.0" --silent "#{url}"`.split("\n")
+
+puts lines
 
 # find lines that match the NLM abbrev tag
 lines.each do |line|
