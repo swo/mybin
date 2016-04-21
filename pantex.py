@@ -9,6 +9,7 @@ if __name__ == '__main__':
     p.add_argument('input')
     p.add_argument('--to', '-t', default='pdf', choices=['pdf', 'docx'])
     p.add_argument('--verbose', '-v', action='store_true')
+    p.add_argument('--force', '-f', action='store_true', help='overwrite existing file?')
     args = p.parse_args()
 
     # check that this is a markdown file
@@ -22,6 +23,9 @@ if __name__ == '__main__':
         pandoc_to = args.to
 
     new_path = root + '.' + args.to
+
+    if not args.force and os.path.isfile(new_path):
+        raise RuntimeError("file '{}' already exists".format(new_path))
 
     command = "pandoc --to {} -o {} {}".format(pandoc_to, new_path, args.input)
 
