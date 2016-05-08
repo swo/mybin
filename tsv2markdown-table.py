@@ -4,6 +4,13 @@
 
 import argparse, sys
 
+def pad_fields_to(fields, length):
+    if len(fields) > length:
+        raise RuntimeError("expected at most {} fields, got {}".format(length, len(fields)))
+
+    return fields + [""] * (length - len(fields))
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('input', type=argparse.FileType('r'), nargs='?', default=sys.stdin)
@@ -13,7 +20,13 @@ if __name__ == '__main__':
     margin = " " * args.margin
 
     lines = [l.rstrip() for l in args.input]
-    columns = zip(*[line.split("\t") for line in lines])
+    fields = [l.split("\t") for l in lines]
+
+    # pad with fields to the right
+    max_fields = max([len(f) for f in fields])
+    padded_fields = [pad_fields_to(f, max_fields) for f in fields]
+
+    columns = zip(*padded_fields)
     column_width = lambda fields: max([len(f) for f in fields])
     column_widths = [column_width(c) for c in columns]
 

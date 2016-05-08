@@ -25,7 +25,10 @@ if __name__ == '__main__':
     new_path = root + '.' + args.to
 
     if not args.force and os.path.isfile(new_path):
-        raise RuntimeError("file '{}' already exists".format(new_path))
+        resp = input("file '{}' already exists. overwite? [y/N] ".format(new_path))
+        if resp.lower() not in ['y', 'yes']:
+            print("not overwriting")
+            sys.exit(0)
 
     command = "pandoc --to {} -o {} {}".format(pandoc_to, new_path, args.input)
 
