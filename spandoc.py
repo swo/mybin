@@ -10,6 +10,7 @@ if __name__ == '__main__':
     p.add_argument('--to', '-t', default='pdf', choices=['pdf', 'docx'], help='output format')
     p.add_argument('--verbose', '-v', action='store_true', help='print pandoc command?')
     p.add_argument('--force', '-f', action='store_true', help='overwrite existing file?')
+    p.add_argument('--filters', nargs='*', default=['pandoc-citeproc'], help='pandoc filters (default: only citeproc)')
     args = p.parse_args()
 
     # if there is no input, then see if there is one .md in the path
@@ -42,7 +43,12 @@ if __name__ == '__main__':
             print("not overwriting")
             sys.exit(0)
 
-    command = "pandoc --to {} -o {} {}".format(pandoc_to, new_path, args.input)
+    if args.filters == []:
+        filters = ''
+    else:
+        filters = '--filter ' + ' '.join(args.filters)
+
+    command = "pandoc {} --to {} -o {} {}".format(filters, pandoc_to, new_path, args.input)
 
     if args.verbose:
         print(command)
