@@ -7,7 +7,9 @@ import argparse, subprocess
 apps = {'photoshop': '/Applications/Adobe Photoshop CC 2015.5/Adobe Photoshop CC 2015.5.app',
         'illustrator': '/Applications/Adobe Illustrator CC 2015.3/Adobe Illustrator.app',
         'word': '/Applications/Microsoft Word.app',
-        'excel': '/Applications/Microsoft Excel.app'
+        'excel': '/Applications/Microsoft Excel.app',
+        'vlc': '/Applications/VLC.app',
+        'affinity': '/Applications/Affinity Designer.app'
         }
 
 def prefix_for(prefix):
