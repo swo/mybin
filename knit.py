@@ -7,7 +7,7 @@ import argparse, subprocess, os
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description='render a Rmd file', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('input', help='Rmd')
-    p.add_argument('--output_format', '-o', default='pdf', choices=['pdf', 'html', 'word', 'docx'])
+    p.add_argument('--output_format', '-o', default='html', choices=['html', 'pdf', 'word', 'docx'])
     p.add_argument('--verbose', '-v', action='store_true', help='show Rscript command?')
     args = p.parse_args()
 

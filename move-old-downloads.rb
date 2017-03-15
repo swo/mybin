@@ -25,7 +25,7 @@ Dir.glob(par[:base_dir] + '/*').each do |abs_fn|
 
   if periods_old > 2
     # this file is too old; it needs to have its date restarted
-    cmds << "touch #{fn.shellescape}"
+    cmds << "touch #{abs_fn.shellescape}"
   elsif periods_old > 1
     cmds << "mv #{abs_fn.shellescape} #{(par[:base_dir] + '/old/' + fn).shellescape}"
   end
